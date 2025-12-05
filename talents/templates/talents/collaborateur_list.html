@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Trouver un collaborateur</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+        /* ---------------------------------------------------- */
+        /* 1. PALETTE DE COULEURS ÉLÉGANTE & MODERNE            */
+        /* ---------------------------------------------------- */
+        :root {
+            --primary: #6366F1;             /* Indigo doux */
+            --primary-light: #818CF8;       /* Indigo clair */
+            --primary-soft: #A855F7;        /* Violet pastel */
+            --primary-ultra-light: rgba(99, 102, 241, 0.08);
+            
+            --accent: #F59E0B;              /* Or chaleureux */
+            --accent-light: #FBBF24;
+            
+            --bg-main: #F8FAFC;             /* Fond très clair bleuté */
+            --bg-gradient: linear-gradient(135deg, #EEF2FF 0%, #F0F9FF 50%, #F8FAFC 100%);
+            --card-bg: #FFFFFF;             /* Cartes blanches */
+            --card-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+            --card-shadow-hover: 0 25px 60px -15px rgba(15, 23, 42, 0.18);
+
+            --text-main: #1E293B;           /* Bleu foncé */
+            --text-muted: #64748B;          /* Gris bleuté */
+            --text-light: #94A3B8;
+            --border-subtle: #E2E8F0;
+            --border-light: #F1F5F9;
+            
+            --success: #10B981;             /* Vert émeraude */
+            --success-light: rgba(16, 185, 129, 0.1);
+            
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-full: 999px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ---------------------------------------------------- */
+        /* 2. STYLE GÉNÉRAL & RESET                            */
+        /* ---------------------------------------------------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 3. TYPOGRAPHIE & EN-TÊTE                            */
+        /* ---------------------------------------------------- */
+        h2 {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 16px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            position: relative;
+            padding-bottom: 16px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-soft));
+            border-radius: var(--radius-full);
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .intro {
+            text-align: center;
+            color: var(--text-muted);
+            margin: 0 auto 48px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            max-width: 700px;
+            padding: 0 20px;
+        }
+
+        .intro strong {
+            color: var(--primary);
+            font-weight: 600;
+            background: var(--primary-ultra-light);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 4. SECTION DES PROPOSITIONS                          */
+        /* ---------------------------------------------------- */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 28px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-soft));
+            border-radius: var(--radius-full);
+        }
+
+        #propositions-list {
+            margin-bottom: 60px;
+        }
+        
+        /* Carte de proposition */
+        .proposition-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            box-shadow: var(--card-shadow);
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .proposition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-soft));
+            border-radius: var(--radius-full) 0 0 var(--radius-full);
+        }
+
+        .proposition-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: var(--primary-light);
+        }
+        
+        .proposition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .proposition-card h3 {
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .proposition-date {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            background: var(--border-light);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            margin-left: 16px;
+        }
+        
+        .proposition-content {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        
+        /* Bouton Contacter */
+        .contact-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            padding: 12px 32px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, 0.35);
+        }
+
+        .contact-btn:hover::before {
+            left: 100%;
+        }
+
+        .contact-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* État vide */
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 60px 30px;
+            border: 2px dashed var(--border-subtle);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            margin: 40px 0;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--text-main);
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 5. FORMULAIRE DE PUBLICATION                         */
+        /* ---------------------------------------------------- */
+        .form-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            padding: 40px;
+            margin: 60px 0;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-soft), var(--accent));
+        }
+
+        .form-container h3 {
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .form-container h3::before {
+            content: '🚀';
+        }
+        
+        /* Style des éléments du formulaire */
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-label::after {
+            content: '*';
+            color: var(--primary);
+            margin-left: 4px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border-subtle);
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Bouton Poster */
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            padding: 16px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 8px;
+            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Message de succès */
+        .success-message {
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+            padding: 16px;
+            background: var(--success-light);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 0.95rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------------------------------------------------- */
+        /* 6. BOUTON DE RETOUR                                  */
+        /* ---------------------------------------------------- */
+        .back-section {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-full);
+            padding: 14px 36px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.1);
+        }
+
+        .back-button:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, 0.25);
+        }
+
+        /* ---------------------------------------------------- */
+        /* 7. RESPONSIVE                                        */
+        /* ---------------------------------------------------- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 20px;
+            }
+            
+            .form-container {
+                padding: 30px 24px;
+            }
+            
+            .proposition-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .proposition-date {
+                align-self: flex-start;
+                margin-left: 0;
+            }
+            
+            .proposition-card {
+                padding: 24px;
+            }
+            
+            .proposition-card h3 {
+                font-size: 1.25rem;
+            }
+            
+            .contact-btn, .submit-btn, .back-button {
+                padding: 14px 28px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px 16px;
+            }
+            
+            .intro {
+                font-size: 1rem;
+                padding: 0;
+            }
+            
+            .form-container {
+                padding: 24px 20px;
+            }
+            
+            .form-input, .form-textarea {
+                padding: 14px 16px;
+            }
+        }
+    </style>
+    
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2><span class="header-gradient">💡 Trouver un Collaborateur</span></h2>
+            <div class="intro">
+                Découvrez les <strong>propositions de projets</strong>, d'aide ou de collaboration soumises par la communauté.
+                Cliquez sur <strong>"Contacter"</strong> pour échanger directement avec le porteur de la proposition.
+            </div>
+        </header>
+        
+        <div class="section-title">
+            Propositions de collaboration
+        </div>
+        
+        <div id="propositions-list">
+            {% for prop in collaborations %}
+                <div class="proposition-card">
+                    <div class="proposition-header">
+                        <h3>{{ prop.titre }}</h3>
+                        <div class="proposition-date">
+                            <i class="far fa-calendar"></i> {{ prop.created_at|date:"d/m/Y" }}
+                        </div>
+                    </div>
+                    
+                    <div class="proposition-content">
+                        {{ prop.desc|linebreaks }}
+                    </div>
+                    
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ prop.email }}&su=Demande%20de%20collaboration&body=Bonjour,%0D%0AJe%20suis%20intéressé(e)%20par%20votre%20proposition%20de%20collaboration." target="_blank" class="contact-btn">
+    <i class="fas fa-envelope"></i> Contacter
+</a>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="far fa-comments"></i>
+                    </div>
+                    <h3>Aucune proposition pour le moment</h3>
+                    <p>Soyez le premier à poster une proposition de collaboration !</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-container">
+            <h3>Publier une nouvelle proposition</h3>
+            <form method="post" id="collaboration-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_titre">Titre de la proposition</label>
+                    <input type="text" name="titre" id="id_titre" class="form-input" 
+                           placeholder="Ex: Développeur web recherché pour projet e-commerce" 
+                           required maxlength="200">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_desc">Description détaillée</label>
+                    <textarea name="desc" id="id_desc" class="form-textarea" 
+                              rows="6" 
+                              placeholder="Décrivez votre projet, les compétences recherchées, la durée estimée, etc."
+                              required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="id_email">Email de contact</label>
+                    <input type="email" name="email" id="id_email" class="form-input" 
+                           placeholder="votre.email@exemple.com" 
+                           required>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Publier la proposition
+                </button>
+                
+                {% if request.GET.success %}
+                    <div class="success-message">
+                        ✅ Votre proposition a été publiée avec succès !
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+        
+        <div class="back-section">
+            <a href="{% url 'talents:talent_list' %}" class="back-button">
+                <i class="fas fa-arrow-left"></i> Retour aux Talents
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Animation des cartes au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.proposition-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Validation du formulaire
+            const form = document.getElementById('collaboration-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const titre = document.getElementById('id_titre');
+                    const desc = document.getElementById('id_desc');
+                    const email = document.getElementById('id_email');
+                    
+                    let isValid = true;
+                    
+                    if (!titre.value.trim()) {
+                        showError(titre, 'Veuillez saisir un titre');
+                        isValid = false;
+                    }
+                    
+                    if (!desc.value.trim()) {
+                        showError(desc, 'Veuillez saisir une description');
+                        isValid = false;
+                    }
+                    
+                    if (!email.value.trim() || !isValidEmail(email.value)) {
+                        showError(email, 'Veuillez saisir un email valide');
+                        isValid = false;
+                    }
+                    
+                    if (!isValid) {
+                        e.preventDefault();
+                    }
+                });
+                
+                // Reset les erreurs lors de la saisie
+                const inputs = form.querySelectorAll('.form-input, .form-textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        clearError(this);
+                    });
+                });
+            }
+        });
+        
+        function showError(input, message) {
+            clearError(input);
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.style.color = '#EF4444';
+            errorDiv.style.fontSize = '0.85rem';
+            errorDiv.style.marginTop = '6px';
+            
+            input.style.borderColor = '#EF4444';
+            input.parentNode.appendChild(errorDiv);
+        }
+        
+        function clearError(input) {
+            input.style.borderColor = '';
+            const errorDiv = input.parentNode.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+        
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+    </script>
+</body>
+</html>

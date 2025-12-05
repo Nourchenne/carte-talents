@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Carte des Talents</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ---------------------------------------------------- */
+        /* 1. PALETTE DE COULEURS ÉLÉGANTE & MODERNE            */
+        /* ---------------------------------------------------- */
+        :root {
+            --primary: #6366F1;             /* Indigo doux */
+            --primary-light: #818CF8;       /* Indigo clair */
+            --primary-soft: #A855F7;        /* Violet pastel */
+            --primary-ultra-light: rgba(99, 102, 241, 0.08);
+            
+            --accent: #F59E0B;              /* Or chaleureux */
+            --accent-light: #FBBF24;
+            --accent-soft: rgba(245, 158, 11, 0.1);
+            
+            --bg-main: #F8FAFC;             /* Fond très clair bleuté */
+            --bg-gradient: linear-gradient(135deg, #EEF2FF 0%, #F0F9FF 50%, #F8FAFC 100%);
+            --card-bg: #FFFFFF;             /* Cartes blanches */
+            --card-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+            --card-shadow-hover: 0 25px 60px -15px rgba(15, 23, 42, 0.18);
+            --card-shadow-carousel: 0 30px 60px -15px rgba(15, 23, 42, 0.2);
+
+            --text-main: #1E293B;           /* Bleu foncé */
+            --text-muted: #64748B;          /* Gris bleuté */
+            --text-light: #94A3B8;
+            --border-subtle: #E2E8F0;
+            --border-light: #F1F5F9;
+            
+            --success: #10B981;             /* Vert émeraude */
+            --success-light: rgba(16, 185, 129, 0.1);
+            
+            --warning: #F59E0B;
+            --warning-light: rgba(245, 158, 11, 0.1);
+            
+            --error: #EF4444;
+            --error-light: rgba(239, 68, 68, 0.1);
+            
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --radius-full: 999px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ---------------------------------------------------- */
+        /* 2. STYLE GÉNÉRAL & RESET                            */
+        /* ---------------------------------------------------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 3. TYPOGRAPHIE & EN-TÊTE                            */
+        /* ---------------------------------------------------- */
+        h1 {
+            text-align: center;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            margin-bottom: 16px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-soft), var(--accent));
+            border-radius: var(--radius-full);
+            opacity: 0.8;
+        }
+
+        .title-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin: 0 auto 40px;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            max-width: 700px;
+            padding: 0 20px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 4. BARRE DE RECHERCHE                                */
+        /* ---------------------------------------------------- */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 20px 18px 52px;
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text-main);
+            transition: var(--transition);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), 0 15px 35px rgba(15, 23, 42, 0.08);
+        }
+
+        /* ---------------------------------------------------- */
+        /* 5. SECTION INTRO                                     */
+        /* ---------------------------------------------------- */
+        .intro-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            padding: 30px 40px;
+            margin: 0 auto 50px;
+            max-width: 800px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-soft));
+        }
+
+        .intro-text {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .intro-highlight {
+            color: var(--primary);
+            font-weight: 600;
+            background: var(--primary-ultra-light);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+        }
+
+        .intro-tip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: var(--accent-soft);
+            border-radius: var(--radius-md);
+        }
+
+        /* ---------------------------------------------------- */
+        /* 6. CARROUSEL DES TALENTS                             */
+        /* ---------------------------------------------------- */
+        .carousel-section {
+            position: relative;
+            margin: 60px 0 80px;
+            padding: 0 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 28px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-soft));
+            border-radius: var(--radius-full);
+        }
+
+        .talent-count {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            background: var(--border-light);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-xl);
+            padding: 20px 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 28px;
+            padding: 20px 10px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 7. CARTES DE TALENT                                  */
+        /* ---------------------------------------------------- */
+        .talent-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            width: 340px;
+            min-width: 340px;
+            flex: 0 0 340px;
+            transition: var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transform: scale(0.95);
+            opacity: 0.9;
+            cursor: pointer;
+        }
+
+        .talent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-soft));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .talent-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--card-shadow-hover);
+            border-color: var(--primary-light);
+            opacity: 1;
+        }
+
+        .talent-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .talent-card.hide {
+            display: none;
+        }
+
+        /* Avatar */
+        .talent-avatar-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 24px;
+        }
+
+        .talent-avatar-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 4px solid white;
+        }
+
+        .talent-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .talent-card:hover .talent-avatar-img {
+            transform: scale(1.08);
+        }
+
+        .verified-badge-large {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            border: 3px solid white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            z-index: 2;
+        }
+
+        .verified-tooltip {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: var(--text-main);
+            color: white;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            transform: translateY(10px);
+        }
+
+        .verified-badge-large:hover .verified-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Informations */
+        .talent-info {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .talent-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .talent-details {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .detail-item {
+            text-align: left;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-label i {
+            font-size: 0.9rem;
+        }
+
+        .detail-content {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            padding-left: 24px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 8. FLÈCHES CARROUSEL                                 */
+        /* ---------------------------------------------------- */
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--card-bg);
+            color: var(--primary);
+            border: 2px solid var(--border-subtle);
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 20;
+            transition: var(--transition);
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-arrow:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 16px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .carousel-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .carousel-arrow.left {
+            left: 0;
+        }
+
+        .carousel-arrow.right {
+            right: 0;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 9. ÉTAT VIDE (Aucun résultat)                       */
+        /* ---------------------------------------------------- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-subtle);
+            margin: 40px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .empty-state-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--text-main);
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 10. FORMULAIRE D'AJOUT DE TALENT                     */
+        /* ---------------------------------------------------- */
+        .form-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            padding: 48px;
+            margin: 80px 0 60px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-soft), var(--accent));
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .form-title::before {
+            content: '⭐';
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-label::after {
+            content: '*';
+            color: var(--primary);
+            margin-left: 4px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border-subtle);
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+            resize: vertical;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Sélection d'avatar */
+        .avatar-section {
+            margin: 40px 0;
+        }
+
+        .avatar-title {
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .avatar-option {
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .avatar-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .avatar-img {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            object-fit: cover;
+        }
+
+        .avatar-option input[type="radio"]:checked + .avatar-img {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2), 0 12px 30px rgba(99, 102, 241, 0.3);
+            transform: scale(1.08);
+        }
+
+        .avatar-option:hover .avatar-img {
+            transform: scale(1.05);
+        }
+
+        /* ---------------------------------------------------- */
+        /* 13. SECTION DE VÉRIFICATION                          */
+        /* ---------------------------------------------------- */
+        .proof-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-ultra-light), rgba(245, 158, 11, 0.05));
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--primary-light);
+        }
+
+        .proof-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .proof-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .proof-text h4 {
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .proof-text p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .file-upload-container {
+            position: relative;
+        }
+
+        .file-input {
+            padding: 50px 20px !important;
+            border: 2px dashed var(--border-subtle) !important;
+            background: var(--bg-main) !important;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-input:hover {
+            border-color: var(--primary) !important;
+            background: white !important;
+        }
+
+        .file-input::file-selector-button {
+            display: none;
+        }
+
+        .file-upload-info {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .file-info-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .file-info-size {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .file-preview {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            display: none;
+        }
+
+        .file-preview.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .file-preview-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-main);
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+        }
+
+        .file-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .file-size {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .remove-file {
+            color: #EF4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .remove-file:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Statut de vérification */
+        .verification-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent);
+        }
+
+        .status-approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+        }
+
+        /* Bénéfices de vérification */
+        .verification-benefits {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .verification-benefits h5 {
+            color: var(--text-main);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .verification-benefits h5::before {
+            content: '🏆';
+        }
+
+        .verification-benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .verification-benefits li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .verification-benefits li i {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        /* Bouton de soumission */
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            padding: 18px 48px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: block;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            box-shadow: 0 16px 35px rgba(99, 102, 241, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 45px rgba(99, 102, 241, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Message de succès */
+        .success-message {
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 24px;
+            text-align: center;
+            padding: 18px;
+            background: var(--success-light);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 1rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------------------------------------------------- */
+        /* 11. BOUTON CTA                                       */
+        /* ---------------------------------------------------- */
+        .cta-section {
+            text-align: center;
+            margin: 60px 0 30px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            padding: 18px 48px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 16px 40px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 22px 55px rgba(99, 102, 241, 0.5);
+            gap: 18px;
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* ---------------------------------------------------- */
+        /* 12. RESPONSIVE                                       */
+        /* ---------------------------------------------------- */
+        @media (max-width: 1024px) {
+            .carousel-section {
+                padding: 0 20px;
+            }
+            
+            .talent-card {
+                width: 320px;
+                min-width: 320px;
+                flex: 0 0 320px;
+            }
+            
+            .carousel-arrow {
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 20px;
+            }
+            
+            .intro-section {
+                padding: 24px;
+            }
+            
+            .form-section {
+                padding: 32px 24px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .avatar-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 16px;
+            }
+            
+            .carousel-section {
+                padding: 0 10px;
+            }
+            
+            .carousel-arrow {
+                width: 44px;
+                height: 44px;
+                font-size: 1.3rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .talent-card {
+                width: 300px;
+                min-width: 300px;
+                flex: 0 0 300px;
+                padding: 24px;
+            }
+            
+            .cta-button, .submit-btn {
+                padding: 16px 36px;
+                font-size: 1rem;
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .proof-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px 16px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                padding-bottom: 20px;
+            }
+            
+            h1::after {
+                width: 80px;
+                height: 4px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                padding: 0;
+            }
+            
+            .intro-section {
+                padding: 20px;
+            }
+            
+            .search-input {
+                padding: 16px 20px 16px 48px;
+            }
+            
+            .carousel-section {
+                padding: 0;
+            }
+            
+            .carousel-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .carousel-arrow.left {
+                left: -10px;
+            }
+            
+            .carousel-arrow.right {
+                right: -10px;
+            }
+            
+            .talent-card {
+                width: 280px;
+                min-width: 280px;
+                flex: 0 0 280px;
+            }
+            
+            .form-section {
+                padding: 24px 20px;
+            }
+            
+            .form-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><span class="title-gradient">Carte des Talents</span></h1>
+            <div class="subtitle">
+                Découvrez, connectez et collaborez avec les talents de notre communauté. 
+                Les talents vérifiés ✅ ont soumis des preuves validées par notre équipe.
+            </div>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-input"
+                       placeholder="Rechercher un talent, une compétence, une passion, une langue..."
+                       value="{{ query }}">
+            </div>
+        </div>
+
+        <div class="intro-section">
+            <p class="intro-text">
+                Bienvenue sur la <span class="intro-highlight">Carte des Talents</span> ! 
+                Explorez les profils de notre communauté. 
+                Les talents avec le badge <span class="status-approved">✓ Vérifié</span> 
+                ont soumis des preuves validées par notre équipe.
+            </p>
+            <div class="intro-tip">
+                <i class="fas fa-lightbulb"></i>
+                <span>Utilisez les flèches pour naviguer ou les touches de votre clavier (← →)</span>
+            </div>
+        </div>
+
+        <div class="carousel-section">
+            <div class="section-header">
+                <div class="section-title">Talents disponibles</div>
+                <div class="talent-count" id="talent-count">Chargement...</div>
+            </div>
+            
+            <div class="carousel-container">
+                <button id="arrow-left" class="carousel-arrow left" aria-label="Précédent">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="carousel-track">
+                    {% if profiles %}
+                        {% for profile in profiles %}
+                            <div class="talent-card talent-hover-card" tabindex="0">
+                                {% if profile.is_verified %}
+                                    <div class="verified-badge-large" title="Talent vérifié">
+                                        <i class="fas fa-check"></i>
+                                        <div class="verified-tooltip">Talent vérifié ✓</div>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="talent-avatar-container">
+                                    <div class="talent-avatar-circle">
+                                        <img src="{{ profile.get_avatar_url }}"
+                                             alt="{{ profile.name }}" class="talent-avatar-img">
+                                    </div>
+                                </div>
+
+                                <div class="talent-info">
+                                    <div class="talent-name">
+                                        {{ profile.name }}
+                                        {% if profile.is_verified %}
+                                            <span class="verification-status status-approved">
+                                                <i class="fas fa-check-circle"></i> Vérifié
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="talent-details">
+                                    {% if profile.skills %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">
+                                                <i class="fas fa-tools"></i>
+                                                <span>COMPÉTENCES</span>
+                                            </div>
+                                            <div class="detail-content">
+                                                {{ profile.skills|truncatewords:12 }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if profile.passions %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">
+                                                <i class="fas fa-heart"></i>
+                                                <span>PASSIONS</span>
+                                            </div>
+                                            <div class="detail-content">
+                                                {{ profile.passions|truncatewords:10 }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if profile.languages %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">
+                                                <i class="fas fa-language"></i>
+                                                <span>LANGUES</span>
+                                            </div>
+                                            <div class="detail-content">
+                                                {{ profile.languages }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if profile.projects %}
+                                        <div class="detail-item">
+                                            <div class="detail-label">
+                                                <i class="fas fa-project-diagram"></i>
+                                                <span>PROJETS</span>
+                                            </div>
+                                            <div class="detail-content">
+                                                {{ profile.projects|truncatewords:10 }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state" id="empty-state" style="display: block;">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-users-slash"></i>
+                            </div>
+                            <h3>Aucun talent trouvé</h3>
+                            <p>Essayez d'élargir votre recherche ou soyez le premier à créer un profil !</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <button id="arrow-right" class="carousel-arrow right" aria-label="Suivant">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="form-title">Rejoignez notre communauté</h3>
+            
+            <form method="post" enctype="multipart/form-data" id="talent-form">
+                {% csrf_token %}
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="id_name">Nom complet</label>
+                        <input type="text" name="name" id="id_name" class="form-input" 
+                               placeholder="Votre nom et prénom" 
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="id_languages">Langues parlées</label>
+                        <input type="text" name="languages" id="id_languages" class="form-input" 
+                               placeholder="Ex: Français, Anglais, Espagnol">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label" for="id_skills">Compétences</label>
+                        <textarea name="skills" id="id_skills" class="form-textarea" 
+                                  rows="3" 
+                                  placeholder="Décrivez vos compétences principales, vos expertises, vos certifications..."
+                                  required></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label" for="id_passions">Passions & centres d'intérêt</label>
+                        <textarea name="passions" id="id_passions" class="form-textarea" 
+                                  rows="2" 
+                                  placeholder="Quelles sont vos passions ? Qu'est-ce qui vous motive ?"></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label" for="id_projects">Projets réalisés</label>
+                        <textarea name="projects" id="id_projects" class="form-textarea" 
+                                  rows="3" 
+                                  placeholder="Parlez-nous de vos projets, réalisations, expériences marquantes..."></textarea>
+                    </div>
+                </div>
+
+                <div class="avatar-section">
+                    <div class="avatar-title">Choisissez votre avatar</div>
+                    <div class="avatar-grid">
+                        {% for i in "123456789ab"|make_list %}
+                            {% with forloop.counter as preset_num %}
+                            <label class="avatar-option" title="Avatar {{ preset_num }}">
+                                <input type="radio"
+                                       name="avatar_preset"
+                                       value="{{ preset_num }}"
+                                       {% if preset_num == 1 %}checked{% endif %}>
+                                <img src="{% static 'talents/avatars/' %}{{ preset_num }}.png"
+                                     alt="Avatar prédéfini {{ preset_num }}" class="avatar-img">
+                            </label>
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Nouvelle section : Vérification du talent -->
+                <div class="proof-section">
+                    <div class="section-header">
+                        <div class="section-title">Vérification de votre talent</div>
+                    </div>
+                    
+                    <div class="proof-info">
+                        <div class="proof-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="proof-text">
+                            <h4>Obtenez le badge "Talent Vérifié" ✅</h4>
+                            <p>
+                                Téléchargez un fichier prouvant vos compétences (diplômes, certifications, 
+                                portfolio, réalisations) pour obtenir le badge de vérification. 
+                                Notre équipe examinera votre dossier sous 48h.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label" for="id_proof_file">
+                            <i class="fas fa-paperclip"></i>
+                            Fichier de preuve (optionnel)
+                        </label>
+                        <div class="file-upload-container">
+                            <input type="file" name="proof_file" id="id_proof_file" 
+                                   class="form-input file-input"
+                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip,.rar"
+                                   onchange="previewFile(this)">
+                            <div class="file-upload-info">
+                                <p class="file-info-text">
+                                    Formats acceptés : PDF, DOC, DOCX, JPG, PNG, ZIP, RAR
+                                </p>
+                                <p class="file-info-size">Taille maximale : 10MB</p>
+                            </div>
+                        </div>
+                        <div class="file-preview" id="file-preview">
+                            <!-- Prévisualisation du fichier apparaîtra ici -->
+                        </div>
+                    </div>
+                    
+                    <div class="verification-benefits">
+                        <h5>Pourquoi obtenir la vérification ?</h5>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Badge de confiance visible sur votre profil</li>
+                            <li><i class="fas fa-star"></i> Priorité dans les recherches</li>
+                            <li><i class="fas fa-handshake"></i> Plus de chances de collaboration</li>
+                            <li><i class="fas fa-badge-check"></i> Authenticité prouvée</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-user-plus"></i> Soumettre mon profil pour vérification
+                </button>
+
+                {% if request.GET.success %}
+                    <div class="success-message">
+                        ✅ Félicitations ! Votre profil a été soumis avec succès. 
+                        Notre équipe examinera votre dossier sous 48h.
+                        <div class="verification-status status-pending">
+                            <i class="fas fa-clock"></i> En attente de vérification
+                        </div>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <div class="cta-section">
+            <a href="{% url 'talents:collaborateur_list' %}" class="cta-button">
+                <i class="fas fa-handshake"></i>
+                <span>Trouver un Collaborateur</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        let visibleCards = 3;
+        let cards = [];
+
+        function updateCarousel() {
+            const track = document.querySelector('.carousel-track');
+            if (!track || cards.length === 0) return;
+
+            visibleCards = window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3;
+            const maxIndex = Math.max(0, cards.length - visibleCards);
+            currentIndex = Math.min(currentIndex, maxIndex);
+
+            const cardWidth = cards[0]?.offsetWidth || 344;
+            const gap = 28;
+            const offset = currentIndex * (cardWidth + gap);
+            
+            track.style.transform = `translateX(-${offset}px)`;
+
+            const leftArrow = document.getElementById('arrow-left');
+            const rightArrow = document.getElementById('arrow-right');
+            const talentCount = document.getElementById('talent-count');
+
+            if (leftArrow) leftArrow.disabled = currentIndex === 0;
+            if (rightArrow) rightArrow.disabled = currentIndex >= maxIndex;
+            if (talentCount) {
+                const visibleCardsCount = cards.filter(card => !card.classList.contains('hide')).length;
+                talentCount.textContent = `${visibleCardsCount} talent${visibleCardsCount > 1 ? 's' : ''}`;
+            }
+        }
+
+        function moveCarousel(dir) {
+            const newIndex = currentIndex + dir;
+            const maxIndex = Math.max(0, cards.length - visibleCards);
+            
+            if (newIndex >= 0 && newIndex <= maxIndex) {
+                currentIndex = newIndex;
+                updateCarousel();
+                
+                // Animation de pulse sur la flèche
+                const arrow = dir === -1 ? document.getElementById('arrow-left') : document.getElementById('arrow-right');
+                if (arrow) {
+                    arrow.style.transform = 'translateY(-50%) scale(0.9)';
+                    setTimeout(() => {
+                        arrow.style.transform = 'translateY(-50%) scale(1)';
+                    }, 150);
+                }
+            }
+        }
+
+        function filterCards() {
+            const input = document.getElementById('searchInput');
+            const query = (input?.value || "").toLowerCase().trim();
+            
+            cards = Array.from(document.querySelectorAll('.talent-card'));
+            
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (query === "" || text.includes(query)) {
+                    card.classList.remove('hide');
+                } else {
+                    card.classList.add('hide');
+                }
+            });
+            
+            currentIndex = 0;
+            updateCarousel();
+            
+            // Afficher l'état vide si aucun résultat
+            const visibleCards = cards.filter(card => !card.classList.contains('hide'));
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) {
+                if (visibleCards.length === 0 && query !== "") {
+                    emptyState.style.display = 'block';
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
+        }
+
+        function initializeCarousel() {
+            cards = Array.from(document.querySelectorAll('.talent-card:not(.hide)'));
+            updateCarousel();
+            
+            // Animation d'entrée des cartes
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px) scale(0.95)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '0.9';
+                    card.style.transform = 'translateY(0) scale(0.95)';
+                }, index * 100);
+            });
+        }
+
+        // Gestion de l'upload de fichier
+        function previewFile(input) {
+            const file = input.files[0];
+            const preview = document.getElementById('file-preview');
+            
+            if (!file) {
+                preview.classList.remove('active');
+                return;
+            }
+            
+            // Vérifier la taille du fichier (10MB max)
+            const maxSize = 10 * 1024 * 1024; // 10MB en bytes
+            if (file.size > maxSize) {
+                alert('Le fichier est trop volumineux. Taille maximale : 10MB');
+                input.value = '';
+                preview.classList.remove('active');
+                return;
+            }
+            
+            // Vérifier l'extension
+            const allowedExtensions = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.zip', '.rar'];
+            const fileName = file.name.toLowerCase();
+            const isValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+            
+            if (!isValidExtension) {
+                alert('Format de fichier non supporté. Formats acceptés : PDF, DOC, DOCX, JPG, PNG, ZIP, RAR');
+                input.value = '';
+                preview.classList.remove('active');
+                return;
+            }
+            
+            // Afficher la prévisualisation
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2); // En MB
+            const fileIcon = getFileIcon(file.name);
+            
+            preview.innerHTML = `
+                <div class="file-preview-item">
+                    <div class="file-icon">
+                        <i class="fas ${fileIcon}"></i>
+                    </div>
+                    <div class="file-details">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${fileSize} MB</div>
+                    </div>
+                    <button type="button" class="remove-file" onclick="removeFile()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            preview.classList.add('active');
+        }
+        
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (ext === 'pdf') return 'fa-file-pdf';
+            if (['doc', 'docx'].includes(ext)) return 'fa-file-word';
+            if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) return 'fa-file-image';
+            if (['zip', 'rar'].includes(ext)) return 'fa-file-archive';
+            return 'fa-file';
+        }
+        
+        function removeFile() {
+            const fileInput = document.getElementById('id_proof_file');
+            const preview = document.getElementById('file-preview');
+            
+            fileInput.value = '';
+            preview.classList.remove('active');
+        }
+        
+        // Gestion du drag & drop
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropArea = document.querySelector('.file-input');
+            
+            if (dropArea) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropArea.addEventListener(eventName, preventDefaults, false);
+                });
+                
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropArea.addEventListener(eventName, highlight, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropArea.addEventListener(eventName, unhighlight, false);
+                });
+                
+                function highlight() {
+                    dropArea.style.borderColor = 'var(--primary)';
+                    dropArea.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+                }
+                
+                function unhighlight() {
+                    dropArea.style.borderColor = 'var(--border-subtle)';
+                    dropArea.style.backgroundColor = 'var(--bg-main)';
+                }
+                
+                dropArea.addEventListener('drop', function(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    if (files.length > 0) {
+                        const fileInput = document.getElementById('id_proof_file');
+                        fileInput.files = files;
+                        previewFile(fileInput);
+                    }
+                });
+            }
+            
+            // Validation du formulaire
+            const form = document.getElementById('talent-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const name = document.getElementById('id_name');
+                    const skills = document.getElementById('id_skills');
+                    
+                    let isValid = true;
+                    
+                    if (!name.value.trim()) {
+                        showError(name, 'Veuillez saisir votre nom');
+                        isValid = false;
+                    }
+                    
+                    if (!skills.value.trim()) {
+                        showError(skills, 'Veuillez décrire vos compétences');
+                        isValid = false;
+                    }
+                    
+                    if (!isValid) {
+                        e.preventDefault();
+                    }
+                });
+                
+                // Reset les erreurs lors de la saisie
+                const inputs = form.querySelectorAll('.form-input, .form-textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        clearError(this);
+                    });
+                });
+            }
+            
+            // Initialisation
+            const searchInput = document.getElementById('searchInput');
+            const leftArrow = document.getElementById('arrow-left');
+            const rightArrow = document.getElementById('arrow-right');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', filterCards);
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        filterCards();
+                    }
+                });
+            }
+            
+            if (leftArrow) {
+                leftArrow.addEventListener('click', function() { moveCarousel(-1); });
+            }
+            
+            if (rightArrow) {
+                rightArrow.addEventListener('click', function() { moveCarousel(1); });
+            }
+
+            window.addEventListener('resize', updateCarousel);
+            
+            // Touches du clavier pour naviguer dans le carrousel
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    moveCarousel(-1);
+                } else if (e.key === 'ArrowRight') {
+                    moveCarousel(1);
+                }
+            });
+            
+            setTimeout(initializeCarousel, 100);
+        });
+        
+        function showError(input, message) {
+            clearError(input);
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.style.color = '#EF4444';
+            errorDiv.style.fontSize = '0.85rem';
+            errorDiv.style.marginTop = '6px';
+            
+            input.style.borderColor = '#EF4444';
+            input.parentNode.appendChild(errorDiv);
+        }
+        
+        function clearError(input) {
+            input.style.borderColor = '';
+            const errorDiv = input.parentNode.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+    </script>
+</body>
+</html>
